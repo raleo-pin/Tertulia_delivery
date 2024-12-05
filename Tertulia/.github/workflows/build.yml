@@ -5,6 +5,7 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   build:
     name: Build and analyze
@@ -22,13 +23,13 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: Build
-        run: <mark><commands_to_build_your_project></mark>
+        run: flutter build
       - name: Download sonar-scanner
         run: |
           curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-x64.zip
           unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
       - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token stored in secrets
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # Use SonarQube token stored in secrets
         run: $HOME/.sonar/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner
